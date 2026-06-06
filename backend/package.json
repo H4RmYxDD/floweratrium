@@ -28,14 +28,18 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.16.3",
+    "mysql2": "^3.22.5",
     "nodemailer": "^8.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.2",
     "eslint": "^10.0.0",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }

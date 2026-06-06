@@ -1,15 +1,24 @@
+import { ResultSetHeader } from 'mysql2';
 import db from './db.js';
 
-export const createOrderItem = async (orderId, productId, quantity, productPrice) => {
+export interface OrderItem {
+    orderItemId: number;
+    orderId: number;
+    productId: number;
+    quantity: number;
+    productPrice: number;
+}
+
+export const createOrderItem = async (orderId: number, productId: number, quantity: number, productPrice: number) => {
     const [result] = await db.query(
         `INSERT INTO orderItems (orderId, productId, quantity, productPrice)
      VALUES (?, ?, ?, ?)`,
         [orderId, productId, quantity, productPrice],
     );
-    return result.insertId;
+    return db.query<ResultSetHeader>('SELECT LAST_INSERT_ID() AS orderItemId');
 };
 
-export const getOrderItemsByOrderId = async (orderId) => {
+export const getOrderItemsByOrderId = async (orderId: number) => {
     const [rows] = await db.query(
         `SELECT oi.quantity, oi.productPrice, p.name, p.imageUrl, o.message
     FROM orderItems oi

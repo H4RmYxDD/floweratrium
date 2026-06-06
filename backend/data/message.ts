@@ -1,6 +1,17 @@
+import { ResultSetHeader } from 'mysql2/promise';
 import db from './db.js';
 
-export async function getThreadsByUserId(userId) {
+export interface Message {
+    messageId: number;
+    threadId: number;
+    senderId: number;
+    receiverId: number;
+    content: string;
+    imageUrl?: string | null;
+    sentAt: Date;
+    isRead: boolean;
+}
+export async function getThreadsByUserId(userId: number) {
     const [rows] = await db.query(
         `SELECT 
             m.threadId,
@@ -30,7 +41,7 @@ export async function getThreadsByUserId(userId) {
     return rows;
 }
 
-export async function getMessagesByThreadId(threadId) {
+export async function getMessagesByThreadId(threadId: number) {
     const [rows] = await db.query(
         `SELECT 
             m.*,
@@ -45,12 +56,12 @@ export async function getMessagesByThreadId(threadId) {
     return rows;
 }
 
-export async function createThread(senderId, receiverId) {
+export async function createThread(senderId: number, receiverId: number) {
     const [result] = await db.query(
         'INSERT INTO messages (senderId, receiverId, content, sentAt) VALUES (?, ?, ?, ?)',
         [senderId, receiverId, '', new Date()],
     );
-    const newMessageId = result.insertId;
+    const newMessageId = await db.query<ResultSetHeader>('SELECT LAST_INSERT_ID() AS messageId');
     await db.query('UPDATE messages SET threadId = ? WHERE messageId = ?', [
         newMessageId,
         newMessageId,
@@ -58,15 +69,15 @@ export async function createThread(senderId, receiverId) {
     return newMessageId;
 }
 
-export async function createMessage(threadId, senderId, receiverId, content, imageUrl) {
+export async function createMessage(threadId: number, senderId: number, receiverId: number, content: string, imageUrl?: string | null) {
     const [result] = await db.query(
         'INSERT INTO messages (threadId, senderId, receiverId, content, imageUrl, sentAt) VALUES (?, ?, ?, ?, ?, ?)',
         [threadId, senderId, receiverId, content, imageUrl ?? null, new Date()],
     );
-    return result.insertId;
+    return db.query<ResultSetHeader>('SELECT LAST_INSERT_ID() AS messageId');
 }
 
-export async function markMessagesAsRead(threadId, userId) {
+export async function markMessagesAsRead(threadId: number, userId: number) {
     await db.query('UPDATE messages SET isRead = TRUE WHERE threadId = ? AND receiverId = ?', [
         threadId,
         userId,
