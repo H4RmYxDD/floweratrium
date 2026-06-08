@@ -37,7 +37,7 @@ const GlobalFooter = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Levente
+                                Levente (Former)
                             </a>
                         </li>
                         <li>
@@ -46,7 +46,7 @@ const GlobalFooter = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Kristóf
+                                Kristóf (Active)
                             </a>
                         </li>
                         <li>
@@ -55,7 +55,7 @@ const GlobalFooter = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Balázs
+                                Balázs (Active)
                             </a>
                         </li>
                     </ul>
