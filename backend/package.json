@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/vizsgaremek-2025-2026-nappali-13b/viragatrium-backend#readme",
   "dependencies": {
+    "@types/nodemailer": "^8.0.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.9.2",
     "eslint": "^10.0.0",
     "globals": "^17.3.0",
