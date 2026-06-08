@@ -5,6 +5,11 @@
     "moduleResolution": "NodeNext",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
-  }
+    "types": ["node"],
+    "rootDir": ".",
+    "outDir": "./dist",
+    "sourceMap": true
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules", "dist"]
 }

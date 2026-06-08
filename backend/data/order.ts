@@ -1,75 +1,97 @@
-import { ResultSetHeader } from 'mysql2';
-import db from './db.js';
+import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import db from "./db.js";
 
-export interface Order {
-    orderId: number;
-    userId: number;
-    customerName: string;
-    email: string;
-    phoneNumber: string;
-    postalCode: string;
-    city: string;
-    address: string;
-    message: string;
-    totalAmount: number;
-    status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
-    createdAt: Date;
+export type OrderStatus =
+  | "Pending"
+  | "Processing"
+  | "Shipped"
+  | "Delivered"
+  | "Cancelled";
+
+export interface Order extends RowDataPacket {
+  orderId: number;
+  userId: number;
+  customerName: string;
+  email: string;
+  phoneNumber: string;
+  postalCode: string;
+  city: string;
+  address: string;
+  message: string;
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: Date;
 }
+
 export const createOrder = async (
-    userId: number,
-    customerName: string,
-    email: string,
-    phoneNumber: string,
-    postalCode: string,
-    city: string,
-    address: string,
-    message: string,
-    totalAmount: number,
-    status = 'Pending',
-) => {
-    const [result] = await db.query(
-        `INSERT INTO orders (userId, customerName, email, phoneNumber, postalCode, city, address, message, totalAmount, status)
+  userId: number,
+  customerName: string,
+  email: string,
+  phoneNumber: string,
+  postalCode: string,
+  city: string,
+  address: string,
+  message: string,
+  totalAmount: number,
+  status: OrderStatus = "Pending",
+): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
+    `INSERT INTO orders (userId, customerName, email, phoneNumber, postalCode, city, address, message, totalAmount, status)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-            userId,
-            customerName,
-            email,
-            phoneNumber,
-            postalCode,
-            city,
-            address,
-            message,
-            totalAmount,
-            status,
-        ],
-    );
-    return await db.query<ResultSetHeader>('SELECT LAST_INSERT_ID() AS orderId');
+    [
+      userId,
+      customerName,
+      email,
+      phoneNumber,
+      postalCode,
+      city,
+      address,
+      message,
+      totalAmount,
+      status,
+    ],
+  );
+  return result.insertId;
 };
 
-export const getOrders = async () => {
-    const [rows] = await db.query(`SELECT * FROM orders`);
-    return rows;
+export const getOrders = async (): Promise<Order[]> => {
+  const [rows] = await db.query<Order[]>(`SELECT * FROM orders`);
+  return rows;
 };
 
-export const getOrderByOrderId = async (orderId: number) => {
-    const [rows] = await db.query(`SELECT * FROM orders WHERE orderId = ?`, [orderId]);
-    return db.query<ResultSetHeader>('SELECT * FROM orders WHERE orderId = ?', [orderId]);
+export const getOrderByOrderId = async (
+  orderId: number,
+): Promise<Order | null> => {
+  const [rows] = await db.query<Order[]>(
+    `SELECT * FROM orders WHERE orderId = ?`,
+    [orderId],
+  );
+  return rows[0] ?? null;
 };
 
-export const getOrdersByUserId = async (userId: number) => {
-    const [rows] = await db.query(`SELECT * FROM orders WHERE userId = ?`, [userId]);
-    return rows;
+export const getOrdersByUserId = async (userId: number): Promise<Order[]> => {
+  const [rows] = await db.query<Order[]>(
+    `SELECT * FROM orders WHERE userId = ?`,
+    [userId],
+  );
+  return rows;
 };
 
-export const updateOrderStatus = async (orderId: number, status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled') => {
-    const [result] = await db.query(`UPDATE orders SET status = ? WHERE orderId = ?`, [
-        status,
-        orderId,
-    ]);
-    return db.query<ResultSetHeader>('SELECT ROW_COUNT() AS affectedRows');
+export const updateOrderStatus = async (
+  orderId: number,
+  status: OrderStatus,
+): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
+    `UPDATE orders SET status = ? WHERE orderId = ?`,
+    [status, orderId],
+  );
+  return result.affectedRows;
 };
 
-export const deleteOrder = async (orderId: number) => {
-    const [result] = await db.query(`DELETE FROM orders WHERE orderId = ?`, [orderId]);
-    return db.query<ResultSetHeader>('SELECT ROW_COUNT() AS affectedRows');
+export const deleteOrder = async (orderId: number): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
+    `DELETE FROM orders WHERE orderId = ?`,
+    [orderId],
+  );
+  return result.affectedRows;
 };

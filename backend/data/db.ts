@@ -2,7 +2,11 @@ import mysql from "mysql2/promise";
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
 
-const pool = mysql.createPool({
+if (!DB_HOST || !DB_USER || !DB_PASSWORD || !DB_NAME) {
+  throw new Error("Missing required database environment variables");
+}
+
+const db = mysql.createPool({
   host: DB_HOST,
   user: DB_USER,
   password: DB_PASSWORD,
@@ -14,4 +18,4 @@ const pool = mysql.createPool({
   charset: "utf8mb4_general_ci",
 });
 
-export default pool;
+export default db;

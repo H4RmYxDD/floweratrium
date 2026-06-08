@@ -1,56 +1,69 @@
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import db from "./db.js";
 
-export interface User {
+export interface User extends RowDataPacket {
   userId: number;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   role: "User" | "Admin";
+  createdAt: Date;
 }
-export const getUsers = async () => {
-  const [rows] = await db.query(`SELECT * FROM users`);
+
+export const getUsers = async (): Promise<User[]> => {
+  const [rows] = await db.query<User[]>(`SELECT * FROM users`);
   return rows;
 };
 
-export const getUserByUserId = async (userId: number) => {
-  const [rows] = await db.query(
+export const getUserByUserId = async (userId: number): Promise<User | null> => {
+  const [rows] = await db.query<User[]>(
     `SELECT * FROM users WHERE userId = ?`,
-    [userId]
+    [userId],
   );
-  return db.query<ResultSetHeader>('SELECT * FROM users WHERE userId = ?', [userId]);
+  return rows[0] ?? null;
 };
 
-export const getUserByEmail = async (email: string) => {
-  const [rows] = await db.query(
-    `SELECT * FROM users WHERE email = ?`,
-    [email]
-  );
-  return db.query<ResultSetHeader>('SELECT * FROM users WHERE email = ?', [email]);
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+  const [rows] = await db.query<User[]>(`SELECT * FROM users WHERE email = ?`, [
+    email,
+  ]);
+  return rows[0] ?? null;
 };
 
-export const createUser = async (firstName: string, lastName: string, email: string, password: string, role = "User") => {
-  const [result] = await db.query(
-    `INSERT INTO users (firstName, lastName, email, password, role)
-     VALUES (?, ?, ?, ?, ?)`,
-    [firstName, lastName, email, password, role]
+export const createUser = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  role: "User" | "Admin" = "User",
+): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
+    `INSERT INTO users (firstName, lastName, email, password, role) VALUES (?, ?, ?, ?, ?)`,
+    [firstName, lastName, email, password, role],
   );
-  return db.query<ResultSetHeader>('SELECT LAST_INSERT_ID() AS userId');
+  return result.insertId;
 };
 
-export const updateUser = async (userId: number, firstName: string, lastName: string, email: string, password: string, role = "User") => {
-  const [result] = await db.query(
+export const updateUser = async (
+  userId: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  role: "User" | "Admin" = "User",
+): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
     `UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ?, role = ? WHERE userId = ?`,
-    [firstName, lastName, email, password, role, userId]
+    [firstName, lastName, email, password, role, userId],
   );
-  return db.query<ResultSetHeader>('SELECT ROW_COUNT() AS affectedRows');
+  return result.affectedRows;
 };
 
-export const deleteUser = async (userId: number) => {
-  const [result] = await db.query(
+export const deleteUser = async (userId: number): Promise<number> => {
+  const [result] = await db.query<ResultSetHeader>(
     `DELETE FROM users WHERE userId = ?`,
-    [userId]
+    [userId],
   );
-  return db.query<ResultSetHeader>('SELECT ROW_COUNT() AS affectedRows');
+  return result.affectedRows;
 };
