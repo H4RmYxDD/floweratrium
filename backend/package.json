@@ -5,11 +5,11 @@
   "main": "app.ts",
   "type": "module",
   "scripts": {
-  "dev": "tsx watch app.ts",
-  "start": "node dist/app.js",
-  "build": "tsc",
-  "lint": "eslint ."
-},
+    "dev": "tsx watch app.ts",
+    "start": "node dist/app.js",
+    "build": "tsc",
+    "lint": "eslint ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vizsgaremek-2025-2026-nappali-13b/viragatrium-backend.git"
