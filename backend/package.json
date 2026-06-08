@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/vizsgaremek-2025-2026-nappali-13b/viragatrium-backend#readme",
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/nodemailer": "^8.0.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
