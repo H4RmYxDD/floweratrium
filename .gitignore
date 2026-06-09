@@ -2,6 +2,7 @@ backend/node_modules
 
 backend/.env
 frontend/node_modules
+.vscode
 
 mobil/flowermobile/.vscode
 mobil/flowermobile/.claude
