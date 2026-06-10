@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import apiClient from '../api/apiClient';
 import { toast } from 'react-toastify';
 import { AiOutlinePlus } from 'react-icons/ai';
-import useAuth from '../store/authStore';
+import useAuthStore from '../store/authStore';
 
 type Message = {
     messageId?: number;
@@ -30,7 +30,7 @@ interface Props {
 }
 
 const GlobalChatbox = ({ isOpen, onClose }: Props) => {
-    const userId = Number(useAuth((state) => state.userId));
+    const userId = useAuthStore((state) => state.user?.userId);
     const [isResized, setIsResized] = useState(false);
     const [size, setSize] = useState({ width: 340, height: 420 });
 
