@@ -35,7 +35,6 @@ router.get(
     res.json(user);
   },
 );
-//test commit
 
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
   try {

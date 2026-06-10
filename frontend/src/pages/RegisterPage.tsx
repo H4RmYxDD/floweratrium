@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import apiClient from '../api/apiClient';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/RegisterPageStyle.css';
-import useAuth from '../store/authStore';
 
 const RegisterPage = () => {
     const [user, setUser] = useState<User>({
@@ -15,7 +14,6 @@ const RegisterPage = () => {
         password: '',
     });
 
-    const setToken = useAuth((state) => state.setToken);
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
@@ -27,10 +25,9 @@ const RegisterPage = () => {
 
         apiClient
             .post('/register', user)
-            .then((res) => {
-                toast.success('Sikeres regisztráció!');
-                navigate('/');
-                setToken(res.data.token);
+            .then(() => {
+                toast.success('Sikeres regisztráció, jelentkezzen be!');
+                navigate('/login');
             })
             .catch(() => toast.error('Sikertelen regisztráció!'));
     };

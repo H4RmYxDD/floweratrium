@@ -10,14 +10,14 @@ import useCart from '../store/cartStore';
 import type { CartItem } from '../store/cartStore';
 import GlobalNavbar from '../components/GlobalNavbar';
 import GlobalFooter from '../components/GlobalFooter';
-import useAuth from '../store/authStore';
+import useAuthStore from '../store/authStore';
 
 const CartPage = () => {
     const [products, setProducts] = useState<Array<Product>>([]);
     const [loading, setLoading] = useState(true);
     const [showCheckoutModal, setShowCheckoutModal] = useState(false);
     const totalItems = useCart((state) => state.getTotalItems());
-    const userId = useAuth((state) => state.userId);
+    const userId = useAuthStore((state) => state.user?.userId);
     const [customerData, setCustomerData] = useState({
         userId: userId,
         customerName: '',
