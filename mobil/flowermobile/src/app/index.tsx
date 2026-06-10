@@ -188,7 +188,7 @@ const HomeScreen = () => {
     
                       <View style={styles.productInfo}>
                         <ThemedText style={styles.productName}>
-                          {product.name} ({product.productId})
+                          {product.name}
                         </ThemedText>
     
                         <ThemedText style={styles.productPrice}>
